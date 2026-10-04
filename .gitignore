@@ -11,9 +11,21 @@ venv/
 .venv/
 env/
 
+# Test / tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
 # Reports (don't commit generated outputs)
 reports/*.json
 reports/*.html
+
+# Large user-supplied wordlists (ship only the curated mini list)
+wordlists/rockyou.txt
+wordlists/rockyou.txt.gz
+*.full.txt.gz
 
 # OS
 .DS_Store

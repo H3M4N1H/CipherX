@@ -1,6 +1,13 @@
-#  CipherX
+# 🔓 CipherX
 
-A multi-layer CTF cipher/encoding auto-cracker for your terminal. Give it a ciphertext — it figures out the encoding stack and peels it layer by layer until it finds your flag.
+[![CI](https://github.com/Dreadonyx/CipherX/actions/workflows/ci.yml/badge.svg)](https://github.com/Dreadonyx/CipherX/actions/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
+A multi-layer CTF cipher/encoding auto-cracker for your terminal. Give it a
+ciphertext — it figures out the encoding stack and peels it layer by layer
+until it finds your flag.
 
 ```
 Input: 565564506533706f6557643258336c7562484a6c583264795a6d6439
@@ -8,52 +15,68 @@ Input: 565564506533706f6557643258336c7562484a6c583264795a6d6439
   Layer 2: Base64  → UGO{zhygv_ynlre_grfg}
   Layer 3: ROT13   → HTB{multi_layer_test}
 
-FLAG FOUND: HTB{multi_layer_test}
+✅ FLAG FOUND: HTB{multi_layer_test}
 [Chain] Hex → Base64 → ROT13
 ```
 
 ---
 
-##  Installation
+## ⚙️ Installation
 
 ```bash
 git clone https://github.com/Dreadonyx/CipherX.git
 cd CipherX
-pip install -r requirements.txt
+
+# core install (encodings, ciphers, hashing)
+pip install .
+
+# everything (AES + steganography + online hash lookup)
+pip install ".[full]"
 ```
+
+Optional extras, if you only want some capabilities:
+
+| Extra     | Enables                               |
+|-----------|---------------------------------------|
+| `crypto`  | AES CBC/ECB decryption (pycryptodome) |
+| `steg`    | LSB image extraction (Pillow)         |
+| `online`  | Online hash lookup (requests)         |
+| `full`    | all of the above                      |
 
 ---
 
-##  Usage
+## 🚀 Usage
+
+After install, use the `cipherx` command (or `python -m cipherx`).
 
 ### Auto-crack mode
 ```bash
 # Auto-detect and crack up to 3 layers
-python main.py -a "SGVsbG8gV29ybGQ="
+cipherx -a "SGVsbG8gV29ybGQ="
 
-# With flag format (stops as soon as flag is found)
-python main.py -a "565564506533..." --flag-format "HTB{" --layers 5
+# With flag format (stops as soon as the flag is found)
+cipherx -a "565564506533..." --flag-format "HTB{" --layers 5
 
 # From a file
-python main.py -f cipher.txt --flag-format "CTF{"
+cipherx -f cipher.txt --flag-format "CTF{"
 
-# Save report
-python main.py -a "..." --flag-format "HTB{" --report html
+# Save a report
+cipherx -a "..." --flag-format "HTB{" --report html
 ```
 
 ### Interactive menu
 ```bash
-python main.py -i
+cipherx -i
 ```
 
 ### Just detect encoding type
 ```bash
-python main.py -d "SGVsbG8="
+cipherx -d "SGVsbG8="
 ```
 
 ---
 
-##  Supported Techniques
+## 🧩 Supported Techniques
 
 ### Encodings (auto-detected + manual)
 | Encoding | Notes |
@@ -84,99 +107,105 @@ python main.py -d "SGVsbG8="
 | Feature | Detail |
 |---------|--------|
 | Hash identification | MD5, SHA1, SHA256, SHA512, bcrypt, NTLM... |
-| Wordlist crack | Against included wordlist |
-| Online lookup | md5decrypt.net (optional) |
+| Wordlist crack | Against the bundled mini wordlist |
+| Online lookup | md5decrypt.net (optional, needs `online` extra) |
 
 ### Steganography
 | Feature | Detail |
 |---------|--------|
-| LSB extraction | From PNG/JPG images |
-| Strings extraction | Like `strings` binary — extracts printable content + flags |
+| LSB extraction | From PNG/JPG images (needs `steg` extra) |
+| Strings extraction | Like `strings` — extracts printable content + flags |
 
 ---
 
-##  How Auto-Detection Works
+## 🧠 How Auto-Detection Works
 
-CipherX uses two layers to decide when it's done:
+CipherX uses two signals to decide when it's done:
 
-**1. Flag Format Match** — if you provide `--flag-format "HTB{"`, it stops the moment the decoded output contains it.
+**1. Flag Format Match** — if you provide `--flag-format "HTB{"`, it stops the
+moment the decoded output contains it.
 
-**2. Entropy + Printability Scoring** — when no flag format is given, each decoded layer is scored:
+**2. Entropy + Printability Scoring** — when no flag format is given, each
+decoded layer is scored:
 - Fully printable ASCII → +3
 - Contains common words → +2
 - Entropy dropped significantly → +2
 - Flag-like pattern `XX{...}` detected → +5
-- Still looks encoded → -1 to -3
+- Still looks encoded → −1 to −3
 
-Score ≥ 6 = plaintext found. Score < threshold = keep decoding.
+Score ≥ 6 = plaintext found. Below threshold = keep decoding.
 
 ---
 
-##  Project Structure
+## 📖 Wordlists
+
+CipherX ships a **curated mini** rockyou list (the most common passwords) so
+hash cracking works out of the box without a 50 MB download. To crack against a
+full wordlist, point the `CIPHERX_WORDLIST` environment variable at a gzipped
+list:
+
+```bash
+export CIPHERX_WORDLIST=/path/to/rockyou.txt.gz
+cipherx -i   # option 5 → hash crack
+```
+
+---
+
+## 📁 Project Structure
 
 ```
 CipherX/
-├── main.py                    # Entry point
-├── core/
-│   ├── detector.py            # Auto-detect encoding type
-│   ├── layered.py             # Multi-layer recursive cracker
-│   ├── interactive.py         # Interactive menu
-│   └── reporter.py            # JSON + HTML reports
-├── modules/
-│   ├── encoding/
-│   │   ├── base.py            # Base64/32/58/85/16
-│   │   ├── hex.py             # Hex, URL, HTML, Decimal
-│   │   └── misc.py            # ROT13/47, Binary, Morse, Octal
-│   ├── hashing/
-│   │   ├── identifier.py      # Hash type detection
-│   │   └── cracker.py         # Wordlist + online crack
-│   ├── ciphers/
-│   │   ├── caesar.py          # Brute force all shifts
-│   │   ├── vigenere.py        # Wordlist key attack
-│   │   ├── xor.py             # Single + multi-byte XOR
-│   │   └── aes.py             # AES CBC/ECB decrypt
-│   └── steg/
-│       ├── lsb.py             # LSB image extraction
-│       └── strings.py         # Strings + flag finder
-├── wordlists/
-│   ├── rockyou_mini.txt       # Common passwords for hash cracking
-│   └── vigenere_keys.txt      # Vigenere key wordlist
-├── utils/
-│   ├── logger.py              # Colored terminal output
-│   └── helpers.py             # Entropy, scoring, flag detection
-└── reports/                   # Generated scan reports
+├── cipherx/
+│   ├── cli.py                 # Command-line entry point
+│   ├── __main__.py            # `python -m cipherx`
+│   ├── core/
+│   │   ├── detector.py        # Auto-detect encoding type
+│   │   ├── layered.py         # Multi-layer recursive cracker
+│   │   ├── interactive.py     # Interactive menu
+│   │   └── reporter.py        # JSON + HTML reports
+│   ├── modules/
+│   │   ├── encoding/          # Base*, Hex, URL, ROT, Binary, Morse...
+│   │   ├── hashing/           # Hash identify + wordlist/online crack
+│   │   ├── ciphers/           # Caesar, Vigenere, XOR, AES
+│   │   └── steg/              # LSB + strings extraction
+│   ├── utils/                 # Logger, scoring/entropy helpers, resources
+│   └── wordlists/             # Bundled mini wordlists
+├── tests/                     # pytest suite
+├── pyproject.toml
+└── .github/workflows/ci.yml
 ```
 
 ---
 
-##  Test It
+## 🧪 Try It
 
 ```bash
 # Single layer Base64
-python main.py -a "SGVsbG8gV29ybGQ=" --flag-format "Hello"
+cipherx -a "SGVsbG8gV29ybGQ=" --flag-format "Hello"
 
 # 3-layer: Hex → Base64 → ROT13
-python main.py -a "565564506533706f6557643258336c7562484a6c583264795a6d6439" --flag-format "HTB{" --layers 5
+cipherx -a "565564506533706f6557643258336c7562484a6c583264795a6d6439" --flag-format "HTB{" --layers 5
 
-# Hash crack
-# interactive: option 5 → 5f4dcc3b5aa765d61d8327deb882cf99 → "password"
+# Hash crack (interactive: option 5 → 5f4dcc3b5aa765d61d8327deb882cf99 → "password")
+cipherx -i
 ```
 
 ---
 
-##  Dependencies
+## 🛠️ Development
 
+```bash
+make dev      # editable install with dev + full extras + pre-commit
+make check    # ruff + mypy + pytest (what CI runs)
+make fmt      # auto-format
 ```
-requests        — online hash lookup
-colorama        — colored terminal output
-pycryptodome    — AES decryption
-Pillow          — LSB steganography
-```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 ---
 
-##  Author
+## 👤 Author
 
 **Dreadonyx** — [github.com/Dreadonyx](https://github.com/Dreadonyx)
 
->  For CTF and educational use only.
+> ⚠️ For CTF and educational use only.
