@@ -10,7 +10,7 @@ readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
 requires-python = ">=3.10"
-authors = [{ name = "Dreadonyx" }]
+authors = [{ name = "H3M4N1H" }]
 keywords = ["ctf", "cipher", "cryptography", "decoder", "security", "steganography"]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -42,9 +42,9 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/Dreadonyx/CipherX"
-Repository = "https://github.com/Dreadonyx/CipherX"
-Issues = "https://github.com/Dreadonyx/CipherX/issues"
+Homepage = "https://github.com/H3M4N1H/CipherX"
+Repository = "https://github.com/H3M4N1H/CipherX"
+Issues = "https://github.com/H3M4N1H/CipherX/issues"
 
 [project.scripts]
 cipherx = "cipherx.cli:main"
