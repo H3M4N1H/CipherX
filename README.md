@@ -206,6 +206,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 ## 👤 Author
 
-**Dreadonyx** — [github.com/H3M4N1H](https://github.com/H3M4N1H)
+**H3M4N1H** — [github.com/H3M4N1H](https://github.com/H3M4N1H)
 
 > ⚠️ For CTF and educational use only.
