@@ -1,6 +1,6 @@
 # 🔓 CipherX
 
-[![CI](https://github.com/Dreadonyx/CipherX/actions/workflows/ci.yml/badge.svg)](https://github.com/Dreadonyx/CipherX/actions/workflows/ci.yml)
+[![CI](https://github.com/H3M4N1H/CipherX/actions/workflows/ci.yml/badge.svg)](https://github.com/H3M4N1H/CipherX/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
@@ -24,7 +24,7 @@ Input: 565564506533706f6557643258336c7562484a6c583264795a6d6439
 ## ⚙️ Installation
 
 ```bash
-git clone https://github.com/Dreadonyx/CipherX.git
+git clone https://github.com/H3M4N1H/CipherX.git
 cd CipherX
 
 # core install (encodings, ciphers, hashing)
