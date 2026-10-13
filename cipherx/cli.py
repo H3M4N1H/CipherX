@@ -15,7 +15,7 @@ def banner():
  | |    | | '_ \| '_ \ / _ \ '__|> <  
  | |____| | |_) | | | |  __/ |  / . \ 
   \_____|_| .__/|_| |_|\___|_| /_/ \_\
-          | |       by Dreadonyx
+          | |       by H3M4N1H
           |_|  github.com/H3M4N1H
     """)
     print("  Multi-layer CTF Cipher/Encoding Auto-Cracker\n")
