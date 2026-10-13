@@ -7,7 +7,7 @@ only**.
 ## Development setup
 
 ```bash
-git clone https://github.com/Dreadonyx/CipherX.git
+git clone https://github.com/H3M4N1H/CipherX.git
 cd CipherX
 python -m venv .venv && source .venv/bin/activate
 make dev          # editable install with dev + optional deps, installs pre-commit
